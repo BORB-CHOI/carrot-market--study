@@ -1,33 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base; /* 컴파일러가 tailwind와 함께 제공되는 기본적인 스타일 종류를 두는 곳, reset.css 및 기본값의 일종. */
+@tailwind components; /* tailwindcss가 제공하는 컴포넌트들, 버튼이나 카드 등. */
+@tailwind utilities; /* 모든 utility class name들, bg-white나 w-full 등. */
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.btn {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded; /* apply는 tailwindcss가 제공하는 기능으로, 클래스를 조합하여 새로운 클래스를 만들 수 있게 해준다. */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* @layer를 사용하면, 해당 레이어에만 적용되는 스타일을 작성할 수 있다. */
+
+@layer base {
+  input {
+    @apply outline-none;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer utilities {
+  /* .css파엘에서 뭔가 할 때는 apply를 사용할 때다. */
+  .kakaka {
+    @apply bg-red-500;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer components {
+  .btn {
+    @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
   }
 }
