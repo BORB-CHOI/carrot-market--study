@@ -1,10 +1,11 @@
+import { BoltIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 export default function Login() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen p-6">
       <div className="my-auto flex flex-col items-center gap-2 *:font-medium">
-        <span className="text-9xl ">⚡</span>
+        <BoltIcon className="size-28 text-green-500"/>
         <h1 className="text-4xl">치직</h1>
         <h2 className="text-2xl">치직 마켓에 어서오세요!</h2>
       </div>
