@@ -6,11 +6,11 @@
   @apply bg-blue-500 text-white font-bold py-2 px-4 rounded; /* apply는 tailwindcss가 제공하는 기능으로, 클래스를 조합하여 새로운 클래스를 만들 수 있게 해준다. */
 }
 
-/* @layer를 사용하면, 해당 레이어에만 적용되는 스타일을 작성할 수 있다. */
+/* @layer를 사용하면, 해당 레이어에만 적용되는 스타일을 확장할 수 있다. */
 
 @layer base {
-  input {
-    @apply outline-none;
+  a {
+    @apply text-green-500;
   }
 }
 
@@ -22,7 +22,7 @@
 }
 
 @layer components {
-  .btn {
-    @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+  .parimary-btn {
+    @apply w-full bg-green-500 text-white font-medium rounded-md text-center hover:bg-green-400 transition-colors;
   }
 }
