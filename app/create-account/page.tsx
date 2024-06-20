@@ -20,10 +20,15 @@ export default function CreateAccount() {
         </div>
         <button className="parimary-btn h-10">Create account</button>
       </form>
-      <div className="w-full h-px bg-neutral-500"/>
+      <div className="w-full h-px bg-neutral-500" />
       <div>
-        <Link href="/sms" className="parimary-btn h-10 flex items-center justify-center gap-3">
-          <span><ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6"/></span>
+        <Link
+          href="/sms"
+          className="parimary-btn h-10 flex items-center justify-center gap-3"
+        >
+          <span>
+            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
+          </span>
           <span>Sign up with SMS</span>
         </Link>
       </div>
