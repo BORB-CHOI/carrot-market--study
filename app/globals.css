@@ -22,7 +22,7 @@
 }
 
 @layer components {
-  .parimary-btn {
+  .primary-btn {
     @apply w-full bg-green-500 text-white font-medium rounded-md text-center hover:bg-green-400 transition-colors;
   }
 }
