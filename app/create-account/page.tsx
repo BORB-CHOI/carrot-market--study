@@ -21,19 +21,28 @@ export default function CreateAccount() {
           name="username"
           placeholder="Username"
           required
+          errors={state?.fieldErrors.username}
         />
-        <FormInput type="email" name="email" placeholder="Email" required />
+        <FormInput
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          errors={state?.fieldErrors.email}
+        />
         <FormInput
           type="password"
           name="password"
           placeholder="Password"
           required
+          errors={state?.fieldErrors.password}
         />
         <FormInput
           type="password"
           name="confirm-password"
           placeholder="Confirm Password"
           required
+          errors={state?.fieldErrors.confirm_password}
         />
         <FormBtn text="Create" />
       </form>
