@@ -5,14 +5,22 @@ const checkUsername = (username: string) => {
   return !username.includes("hi") ? true : false;
 };
 
-const checkPassword = ({
-  password,
-  confirm_password,
-}: {
-  password: string;
-  confirm_password: string;
-}) => {
-  return password === confirm_password ? true : false;
+const checkPassword = (
+  data: { password: string; confirm_password: string },
+  ctx: z.RefinementCtx
+) => {
+  if (data.password !== data.confirm_password) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["password"],
+      message: "비밀번호가 일치하지 않습니다.",
+    });
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["confirm_password"],
+      message: "비밀번호가 일치하지 않습니다.",
+    });
+  }
 };
 
 const passwordRegex = new RegExp(
@@ -53,10 +61,11 @@ const formSchema = z
       .string({ message: "비밀번호 형식은 문자열이어야 합니다." })
       .min(8, "비밀번호가 너무 짧다니깐?"),
   })
-  .refine(checkPassword, {
-    message: "비밀번호가 일치하지 않습니다.",
-    path: ["confirm_password", "password"],
-  });
+  // .refine(checkPassword, {
+  //   message: "비밀번호가 일치하지 않습니다.",
+  //   path: ["confirm_password", "password"],
+  // })
+  .superRefine(checkPassword);
 
 export async function createAccount(prevState: any, formData: FormData) {
   const data = {
