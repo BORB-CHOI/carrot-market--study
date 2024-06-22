@@ -15,6 +15,10 @@ const checkPassword = ({
   return password === confirm_password ? true : false;
 };
 
+const passwordRegex = new RegExp(
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*?[#?!@$%^&*-]).+$/
+);
+
 const formSchema = z
   .object({
     username: z
@@ -24,6 +28,9 @@ const formSchema = z
       })
       .min(3, "너무 짧으세요.")
       .max(20, "너무 기세요.")
+      .toLowerCase()
+      .trim()
+      .transform((username) => `변환된 ${username}`)
       .refine(checkUsername, "hi 금지"),
     email: z
       .string({
@@ -31,12 +38,17 @@ const formSchema = z
       })
       .email({
         message: "이메일 형식이 올바르지 않습니다.",
-      }),
+      })
+      .toLowerCase(),
     password: z
       .string({
         message: "비밀번호 형식은 문자열이어야 합니다.",
       })
-      .min(8, "비밀번호가 너무 짧으세요."),
+      .min(8, "비밀번호가 너무 짧으세요.")
+      .regex(
+        passwordRegex,
+        "비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다."
+      ),
     confirm_password: z
       .string({ message: "비밀번호 형식은 문자열이어야 합니다." })
       .min(8, "비밀번호가 너무 짧다니깐?"),
