@@ -38,9 +38,10 @@ export default function SMSLogin() {
             required
             min={100000}
             max={999999}
+            errors={state.error?.formErrors}
           />
         )}
-        <Button text={state.token ? "Verify Token" : "Send Verification SMS"} />
+        <Button text={state.token ? "인증하기" : "인증번호 전송"} />
       </form>
     </div>
   );
