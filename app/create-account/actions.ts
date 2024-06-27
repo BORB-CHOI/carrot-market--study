@@ -1,4 +1,9 @@
 "use server";
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX,
+  PASSWORD_REGEX_ERROR,
+} from "@/lib/constants";
 import { z } from "zod";
 
 const checkUsername = (username: string) => {
@@ -23,10 +28,6 @@ const checkPassword = (
   }
 };
 
-const passwordRegex = new RegExp(
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*?[#?!@$%^&*-]).+$/
-);
-
 const formSchema = z
   .object({
     username: z
@@ -34,8 +35,6 @@ const formSchema = z
         invalid_type_error: "사용자 이름은 문자 형식이어야 합니다.",
         required_error: "사용자 이름은 필수입니다.",
       })
-      .min(3, "너무 짧으세요.")
-      .max(20, "너무 기세요.")
       .toLowerCase()
       .trim()
       .transform((username) => `변환된 ${username}`)
@@ -52,14 +51,11 @@ const formSchema = z
       .string({
         message: "비밀번호 형식은 문자열이어야 합니다.",
       })
-      .min(8, "비밀번호가 너무 짧으세요.")
-      .regex(
-        passwordRegex,
-        "비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다."
-      ),
+      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧으세요.")
+      .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirm_password: z
       .string({ message: "비밀번호 형식은 문자열이어야 합니다." })
-      .min(8, "비밀번호가 너무 짧다니깐?"),
+      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧다니깐?"),
   })
   // .refine(checkPassword, {
   //   message: "비밀번호가 일치하지 않습니다.",
