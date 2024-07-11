@@ -6,6 +6,7 @@ import {
 } from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 
 const checkUsername = (username: string) => {
   return !username.includes("hi") ? true : false;
@@ -78,8 +79,8 @@ const formSchema = z
       .string({
         message: "비밀번호 형식은 문자열이어야 합니다.",
       })
-      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧으세요.")
-      .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧으세요."),
+    // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirm_password: z
       .string({ message: "비밀번호 형식은 문자열이어야 합니다." })
       .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧다니깐?"),
@@ -114,8 +115,23 @@ export async function createAccount(prevState: any, formData: FormData) {
   } else {
     // check if username is taken
     // check if the email is already used
+
     // hash the password
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+
     // save the user to the db
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    console.log(user);
     // log the user in
     // redirect to the '/'
   }
