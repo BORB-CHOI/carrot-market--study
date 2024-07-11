@@ -4,6 +4,7 @@ import {
   PASSWORD_REGEX,
   PASSWORD_REGEX_ERROR,
 } from "@/lib/constants";
+import db from "@/lib/db";
 import { z } from "zod";
 
 const checkUsername = (username: string) => {
@@ -28,6 +29,30 @@ const checkPassword = (
   }
 };
 
+const checkUniqueUsername = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return !Boolean(user);
+};
+
+const checkUniqueEmail = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return Boolean(user) == false;
+};
+
 const formSchema = z
   .object({
     username: z
@@ -37,8 +62,9 @@ const formSchema = z
       })
       .toLowerCase()
       .trim()
-      .transform((username) => `변환된 ${username}`)
-      .refine(checkUsername, "hi 금지"),
+      // .transform((username) => `변환된 ${username}`)
+      .refine(checkUsername, "hi 금지")
+      .refine(checkUniqueUsername, "이미 사용 중인 사용자 이름입니다."),
     email: z
       .string({
         message: "이메일 형식은 문자열이어야 합니다.",
@@ -46,7 +72,8 @@ const formSchema = z
       .email({
         message: "이메일 형식이 올바르지 않습니다.",
       })
-      .toLowerCase(),
+      .toLowerCase()
+      .refine(checkUniqueEmail, "이미 사용 중인 이메일입니다."),
     password: z
       .string({
         message: "비밀번호 형식은 문자열이어야 합니다.",
@@ -78,11 +105,18 @@ export async function createAccount(prevState: any, formData: FormData) {
   // }
   // 위 방법은 매 번 try-catch를 사용해야 하므로 safeParse를 사용하는 것이 더 편하다.
 
-  const result = formSchema.safeParse(data);
+  const result = await formSchema.safeParseAsync(data);
   if (result.success === false) {
     // console.log(result.error);
     // flatten을 쓰면 error를 더 쉽게 볼 수 있다.
     console.log(result.error.flatten());
     return result.error.flatten();
+  } else {
+    // check if username is taken
+    // check if the email is already used
+    // hash the password
+    // save the user to the db
+    // log the user in
+    // redirect to the '/'
   }
 }
