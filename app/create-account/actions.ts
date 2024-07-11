@@ -10,6 +10,7 @@ import bcrypt from "bcrypt";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import getSession from "@/lib/session";
 
 const checkUsername = (username: string) => {
   return !username.includes("hi") ? true : false;
@@ -78,15 +79,15 @@ const formSchema = z
       })
       .toLowerCase()
       .refine(checkUniqueEmail, "이미 사용 중인 이메일입니다."),
-    password: z
-      .string({
-        message: "비밀번호 형식은 문자열이어야 합니다.",
-      })
-      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧으세요."),
+    password: z.string({
+      message: "비밀번호 형식은 문자열이어야 합니다.",
+    }),
+    // .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧으세요."),
     // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
-    confirm_password: z
-      .string({ message: "비밀번호 형식은 문자열이어야 합니다." })
-      .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧다니깐?"),
+    confirm_password: z.string({
+      message: "비밀번호 형식은 문자열이어야 합니다.",
+    }),
+    // .min(PASSWORD_MIN_LENGTH, "비밀번호가 너무 짧다니깐?"),
   })
   // .refine(checkPassword, {
   //   message: "비밀번호가 일치하지 않습니다.",
@@ -109,7 +110,7 @@ export async function createAccount(prevState: any, formData: FormData) {
   // }
   // 위 방법은 매 번 try-catch를 사용해야 하므로 safeParse를 사용하는 것이 더 편하다.
 
-  const result = await formSchema.safeParseAsync(data);
+  const result = await formSchema.spa(data);
   if (result.success === false) {
     // console.log(result.error);
     // flatten을 쓰면 error를 더 쉽게 볼 수 있다.
@@ -136,11 +137,7 @@ export async function createAccount(prevState: any, formData: FormData) {
 
     // log the user in
     // 쿠키 받거나 만들기
-    const session = await getIronSession(cookies(), {
-      cookieName: "karrot-session",
-      password: process.env.SESSION_SECRET as string,
-    });
-    //@ts-ignore
+    const session = await getSession();
     // 쿠키에 사용자 id 저장
     session.id = user.id;
     await session.save();
