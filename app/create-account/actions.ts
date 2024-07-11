@@ -7,6 +7,9 @@ import {
 import db from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const checkUsername = (username: string) => {
   return !username.includes("hi") ? true : false;
@@ -131,8 +134,18 @@ export async function createAccount(prevState: any, formData: FormData) {
       },
     });
 
-    console.log(user);
     // log the user in
+    // 쿠키 받거나 만들기
+    const session = await getIronSession(cookies(), {
+      cookieName: "karrot-session",
+      password: process.env.SESSION_SECRET as string,
+    });
+    //@ts-ignore
+    // 쿠키에 사용자 id 저장
+    session.id = user.id;
+    await session.save();
+
     // redirect to the '/'
+    redirect("/profile");
   }
 }
